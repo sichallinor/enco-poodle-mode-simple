@@ -20,19 +20,21 @@ export default {
         mode.mLog("modeCreateNew");
 
         // ensure the template is marked as 'dirty' (being edited / not yet stored)
-        template['_dirty'] = true;
-        template['_deleted'] = false;
+
+        var newItem = this.modeParseIncomingModel(mode,template)
+        newItem['_dirty'] = true;
+        newItem['_deleted'] = false;
 
         // -------------------------------------------
         // INSERT THE TEMPLATE ITEM IN THE APPROPRIATE LIST
         // empty the models 
         var autoAddToModels = true;
         if(autoAddToModels){
-            this.modeSetModel(mode,template)
+            this.modeSetModel(mode,newItem)
             console.log("modeCreateNew : adding to models (in ref)",mode.reference);
         }
         if(autoAddToItems) {
-            this.modeAddItem(mode,template)
+            this.modeAddItem(mode,newItem)
         }
         // -------------------------------------------
 
@@ -103,7 +105,8 @@ export default {
     },
 
 
-    // Set the first Model (results in 1 item only in the models array)
+    // SET the first Model (results in 1 item only in the models array)
+    // (REPLACES ANY EXISTING MODEL)
     modeSetModel(mode,model){
         // ADD ITEMS PROPERTY IF IT DOESNT EXIST
         if(!mode.hasOwnProperty('models')){
@@ -112,6 +115,14 @@ export default {
             mode.models.length = 0; // TO EMPTY THE ARRAY
         }
         mode.models.push(model);
+    },
+
+    // ASSIGNS DATA TO ANY EXISTING MODEL
+    modeUpdateModelWithData(mode,model){
+        if(mode.hasOwnProperty('models') && mode.models.length>0 ){
+            var original = mode.models[0];
+            Object.assign(original, model);
+        }
     },
 
     // SET ALL MODELS ARE CLEAN (_DIRTY FLAG TO FALSE)
@@ -126,7 +137,9 @@ export default {
 
     // EMPTY THE MODELS ARRAY
     modeEmptyModels(mode){
-        if(mode['models'].length>0) mode['models'].length = 0
+        if(mode['models'].length>0) {
+            mode['models'].length = 0
+        }
     },
 
     // EMPTY THE MODELS ARRAY
@@ -153,10 +166,21 @@ export default {
     // ------------------------------------
 
 
+    _parseAssignFunction: function(model){
+        console.log("PARSE_ASSIGN_BASIC")
+      return Object.assign(new ModeItem, model)
+    },
+
+    assignParseFunction(func){
+        this._parseAssignFunction = func
+    },
+
     parseIncomingModel(schema,model){
 
-    	// PARSE AS PROTOTYPE
-    	model = Object.assign(new ModeItem, model)
+        // DYNAMIC PARSE ASSIGN FUNCTION .. CAN BE OVERRIDEN BY MODULES AT HIGHER LEVELS
+        if(this._parseAssignFunction) {
+            model = this._parseAssignFunction(model)
+        }
 
         // -----------------------------------
         // ANY FIELD THAT IS DESIGNATED AS AN OBJECT IN THE SCHEMA - BUT IS RECEIVED AS A STRING
