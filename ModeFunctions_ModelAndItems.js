@@ -94,6 +94,17 @@ export default {
                 // expand the items in prop and add them to mode items
                 mode.items.push(...items);  
             }
+        }else{
+            // HERE IM EXPECTING A SINGLE ITEM
+            var singleItem = items;
+            // ------------------------------------------------------
+            // IF WE HAVE A SCHEMA WE MAY PARSE THE INCOMING MODEL 
+            if(schema){
+                var newItem = this.parseIncomingModel(schema,singleItem);
+                mode.items.push(newItem);  
+            }else{
+                mode.items.push(singleItem);  
+            }
         }
     },
 
