@@ -145,6 +145,17 @@ export default {
         } 
     },
 
+    // SET ALL BULK MODELS ARE CLEAN (_DIRTY FLAG TO FALSE)
+    modeSetBulkModelsAreClean(mode){
+        console.log('modeSetBulkModelsAreClean')
+        if(!mode.bulk || !mode.bulk.items || !mode.bulk.items.length>0) return;
+        var modelsToStore = mode.bulk.items;
+        for(var mIndex=0; mIndex<modelsToStore.length; mIndex++){
+            var model = modelsToStore[mIndex];
+            model._dirty = false;
+        } 
+    },
+
 
     // EMPTY THE MODELS ARRAY
     modeEmptyModels(mode){
@@ -174,7 +185,37 @@ export default {
         //-------------------------------
     },
 
+
+    modeBulkUpdate(mode){
+        if(!mode.bulk || !mode.bulk.items || !mode.bulk.models || mode.bulk.models.length<1) return;
+
+
+
+        var bulkModel = mode.bulk.models[0];
+
+        console.log("modeBulkUpdate : ",bulkModel)
+
+        for(var i=0 ; i<mode.bulk.items.length ; i++){
+            var item = mode.bulk.items[i]
+
+            // UPDATE THE ITEM
+            Object.assign(item, bulkModel);
+            item._dirty = true;
+        }
+
+        console.log("modeBulkUpdate_items : ",mode.bulk.items)
+
+    },
+
     // ------------------------------------
+
+
+    modeUpdatePagination(mode,pagination){
+        console.log('modeUpdatePagination : ',pagination,mode)
+        if(mode.pagination && pagination) mode.pagination = Object.assign(mode.pagination, pagination);
+    },
+
+
 
 
     _parseAssignFunction: function(model){
