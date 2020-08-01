@@ -18,15 +18,44 @@ export default {
     modeAddAuthToken(mode,token){
         if(!mode.hasOwnProperty('auth')) mode['auth'] = {};
         mode.auth['token'] = token;
+
+        mode.auth['is_signed_in'] = true;
     },
+    modeStripAuthToken(mode){
+        if(mode.hasOwnProperty('auth')){
+            // REMOVE TOKEN DETAILS
+            if(mode.auth.hasOwnProperty('token')) mode.auth['token'] = null;
+            if(mode.auth.hasOwnProperty('is_signed_in')) mode.auth['is_signed_in'] = false;
+        }
+    },
+    //----------------
     modeStripLoginDetails(mode){
         if(mode.hasOwnProperty('auth')){
             // REMOVE LOGIN DETAILS
-            if(mode.auth.hasOwnProperty('email')) delete mode.auth.email;
-            if(mode.auth.hasOwnProperty('password')) delete mode.auth.password;
+            //if(mode.auth.hasOwnProperty('email')) delete mode.auth.email;
+            //if(mode.auth.hasOwnProperty('password')) delete mode.auth.password;
+            //if(mode.auth.hasOwnProperty('email')) mode.auth.email=null;
+            if(mode.auth.hasOwnProperty('password')) mode.auth.password=null;
+
         }
     },
+    //----------------
+    modeAddAuthUserData(mode,data){
+        if(!mode.hasOwnProperty('auth')) mode['auth'] = {};
+        Object.assign(mode.auth,data)
+    },
 
-
+    //----------------
+    modeAddAuthSignInMethod(mode,method){
+        if(!mode.hasOwnProperty('auth')) mode['auth'] = {};
+        //eg method = "is_signed_in_email"
+        mode.auth[method] = true
+    },
+    modeStripAuthSignInMethod(mode,method){
+        if(mode.hasOwnProperty('auth')){
+            //eg method = "is_signed_in_email"
+            mode.auth[method] = false
+        }
+    }
 
 }

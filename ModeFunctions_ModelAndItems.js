@@ -160,7 +160,7 @@ export default {
     // EMPTY THE MODELS ARRAY
     modeEmptyModels(mode){
         if(mode['models'].length>0) {
-            mode['models'].length = 0
+            mode['models'].length = 0  // THIS SHOULD BE REACTIVE
         }
     },
 
@@ -214,6 +214,42 @@ export default {
         console.log('modeUpdatePagination : ',pagination,mode)
         if(mode.pagination && pagination) mode.pagination = Object.assign(mode.pagination, pagination);
     },
+
+
+
+    modeUpdateCurrentModelFromItemsByIdentityMatch(mode){
+        var schema = (mode.schemas && mode.schemas.length>0) ? mode.schemas[0] : null;
+        var model = (mode.models && mode.models.length>0) ? mode.models[0] : null;
+        var items = (mode.items && mode.items.length>0) ? mode.items : null;
+
+        if(model && items && schema){
+
+            var identityField = (schema.hasOwnProperty('IdentityField')) ? schema.IdentityField : null;
+
+            if(identityField && model.hasOwnProperty(identityField)){
+
+                var curId = model[identityField];
+
+                // CHECK FOR MATCH
+                var filteredItems = items.filter(
+                      function(item) {
+                        return (item.hasOwnProperty(identityField) && item[identityField]===curId)
+                      })
+
+
+                if(filteredItems.length>0){
+                    // A MATCH WAS FOUND
+                    var newItem = filteredItems[0]
+                    mode.mfSetModel(newItem);
+                }
+
+            }
+
+        }
+
+    },
+
+
 
 
 
