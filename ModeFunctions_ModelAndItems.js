@@ -75,11 +75,11 @@ export default {
     // Add 'items' an array of items 
     modeAddItems(mode,items){
         var schema = (mode.schemas && mode.schemas.length>0) ? mode.schemas[0] : null;
-        if(!mode.hasOwnProperty('items')){
+        //if(!mode.hasOwnProperty('items')){
             mode['items'] = [];
-        }else{
-            mode.items.length = 0; // TO EMPTY THE ARRAY
-        }
+        //}else{
+        //    mode.items.length = 0; // TO EMPTY THE ARRAY
+        //}
         // ----------------------------------
         //we may receive an object here 
         if(Array.isArray(items)){
@@ -160,7 +160,8 @@ export default {
     // EMPTY THE MODELS ARRAY
     modeEmptyModels(mode){
         if(mode['models'].length>0) {
-            mode['models'].length = 0  // THIS SHOULD BE REACTIVE
+            //mode['models'].length = 0  // THIS SHOULD BE REACTIVE
+            mode['models'] = [];
         }
     },
 
@@ -260,6 +261,7 @@ export default {
     },
 
     assignParseFunction(func){
+        console.log("assignParseFunction")
         this._parseAssignFunction = func
     },
 
