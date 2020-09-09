@@ -74,6 +74,11 @@ export default {
 
     // Add 'items' an array of items 
     modeAddItems(mode,items){
+
+        // GET ANY PARSE FUNCTION
+        var parseFunction = mode.delegates.hasOwnProperty('delegate_parseModel') ? mode.delegates.delegate_parseModel : null;
+
+        // GET ANY SCHEMA
         var schema = (mode.schemas && mode.schemas.length>0) ? mode.schemas[0] : null;
         //if(!mode.hasOwnProperty('items')){
             mode['items'] = [];
@@ -87,7 +92,7 @@ export default {
             // IF WE HAVE A SCHEMA WE MAY PARSE THE INCOMING MODEL 
             if(schema){
                 for(var i=0;i<items.length;i++){
-                    var newItem = this.parseIncomingModel(schema,items[i]);
+                    var newItem = this.parseIncomingModel(schema,items[i],parseFunction);
                     mode.items.push(newItem);  
                 }
             }else{
@@ -100,7 +105,7 @@ export default {
             // ------------------------------------------------------
             // IF WE HAVE A SCHEMA WE MAY PARSE THE INCOMING MODEL 
             if(schema){
-                var newItem = this.parseIncomingModel(schema,singleItem);
+                var newItem = this.parseIncomingModel(schema,singleItem,parseFunction);
                 mode.items.push(newItem);  
             }else{
                 mode.items.push(singleItem);  
@@ -109,9 +114,10 @@ export default {
     },
 
     modeParseIncomingModel(mode,model){
+        var parseFunction = mode.delegates.hasOwnProperty('delegate_parseModel') ? mode.delegates.delegate_parseModel : null;
     	var schema = (mode.schemas && mode.schemas.length>0) ? mode.schemas[0] : null;
         var newItem = model;
-        if(schema) newItem = this.parseIncomingModel(schema,model);
+        if(schema) newItem = this.parseIncomingModel(schema,model,parseFunction);
         return newItem;
     },
 
@@ -251,24 +257,31 @@ export default {
     },
 
 
-
     mutableFunctions: {
         _parseAssignFunction: function(model){
             console.log("PARSE_ASSIGN_BASIC")
           return Object.assign(new ModeItem, model)
         },
     },
-
-
+    
+    /* seems this approach doesnt work in a modular context
     assignParseFunction(func){
         console.log("assignParseFunction : ", func)
         this.mutableFunctions._parseAssignFunction = func
     },
+    */
+    
 
-    parseIncomingModel(schema,model){
+    parseIncomingModel(schema,model,parseFunction=null){
 
         // DYNAMIC PARSE ASSIGN FUNCTION .. CAN BE OVERRIDEN BY MODULES AT HIGHER LEVELS
-        if(this.mutableFunctions._parseAssignFunction) {
+        //if(this.mutableFunctions._parseAssignFunction) {
+        //    model = this.mutableFunctions._parseAssignFunction(model)
+        //}
+
+        if(parseFunction) {
+            model = parseFunction(model);
+        }else{
             model = this.mutableFunctions._parseAssignFunction(model)
         }
 
