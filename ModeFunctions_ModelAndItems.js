@@ -252,24 +252,24 @@ export default {
 
 
 
-
-
-
-    _parseAssignFunction: function(model){
-        console.log("PARSE_ASSIGN_BASIC")
-      return Object.assign(new ModeItem, model)
+    mutableFunctions: {
+        _parseAssignFunction: function(model){
+            console.log("PARSE_ASSIGN_BASIC")
+          return Object.assign(new ModeItem, model)
+        },
     },
 
+
     assignParseFunction(func){
-        console.log("assignParseFunction")
-        this._parseAssignFunction = func
+        console.log("assignParseFunction : ", func)
+        this.mutableFunctions._parseAssignFunction = func
     },
 
     parseIncomingModel(schema,model){
 
         // DYNAMIC PARSE ASSIGN FUNCTION .. CAN BE OVERRIDEN BY MODULES AT HIGHER LEVELS
-        if(this._parseAssignFunction) {
-            model = this._parseAssignFunction(model)
+        if(this.mutableFunctions._parseAssignFunction) {
+            model = this.mutableFunctions._parseAssignFunction(model)
         }
 
         // -----------------------------------
