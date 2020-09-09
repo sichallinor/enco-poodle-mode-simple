@@ -76,7 +76,7 @@ export default {
     modeAddItems(mode,items){
 
         // GET ANY PARSE FUNCTION
-        var parseFunction = mode.delegates.hasOwnProperty('delegate_parseModel') ? mode.delegates.delegate_parseModel : null;
+        var parseFunction = (mode.delegates && mode.delegates.hasOwnProperty('delegate_parseModel')) ? mode.delegates.delegate_parseModel : null;
 
         // GET ANY SCHEMA
         var schema = (mode.schemas && mode.schemas.length>0) ? mode.schemas[0] : null;
@@ -114,7 +114,7 @@ export default {
     },
 
     modeParseIncomingModel(mode,model){
-        var parseFunction = mode.delegates.hasOwnProperty('delegate_parseModel') ? mode.delegates.delegate_parseModel : null;
+        var parseFunction = (mode.delegates && mode.delegates.hasOwnProperty('delegate_parseModel')) ? mode.delegates.delegate_parseModel : null;
     	var schema = (mode.schemas && mode.schemas.length>0) ? mode.schemas[0] : null;
         var newItem = model;
         if(schema) newItem = this.parseIncomingModel(schema,model,parseFunction);
