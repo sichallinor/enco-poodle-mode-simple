@@ -22,11 +22,14 @@ export default {
         mode.auth['is_signed_in'] = true;
     },
     modeStripAuthToken(mode){
+        console.log("modeStripAuthToken",mode)
         if(mode.hasOwnProperty('auth')){
             // REMOVE TOKEN DETAILS
             if(mode.auth.hasOwnProperty('token')) mode.auth['token'] = null;
             if(mode.auth.hasOwnProperty('is_signed_in')) mode.auth['is_signed_in'] = false;
-        }
+            if(mode.auth.hasOwnProperty('current_role')) mode.auth['current_role'] = null;
+            if(mode.auth.hasOwnProperty('user')) mode.auth['user'] = null;
+        } 
     },
     //----------------
     modeStripLoginDetails(mode){
